@@ -7,31 +7,34 @@ import useTrackLocation from '../hooks/use-track-location'
 import { useEffect, useState, useContext } from 'react'
 import { ACTION_TYPE, StoreContext } from '../context/store-context'
 
-// export async function getStaticProps(context) {
-//   const coffeeStores = await fetchCoffeeStores();
+export async function getStaticProps(context) {
+  const coffeeStores = await fetchCoffeeStores();
   
-//   return {
-//     props: {
-//       coffeeStores,
-//     },
-//   };
-// }
+  return {
+    props: {
+      coffeeStores,
+    },
+  };
+}
 
 export default function Home(props) {
 
   const { handleTrackLocation, locationErrorMsg, isLocating } = useTrackLocation()
 
   const { dispatch, state } = useContext(StoreContext);
-  const { coffeeStores, latLong } = state;
+  const { coffeeStores, latLong } = state; 
  
   const handleUseEffect = async () => { 
     if(latLong) {
       try {
-        const fetchedCoffeeStores = await fetchCoffeeStores(latLong);
-        console.log("COFFEE", fetchedCoffeeStores)
+        // const fetchedCoffeeStores = await fetchCoffeeStores(latLong);
+
+        const response = await fetch(`api/getCoffeeStoresByLocation?latLong=${latLong}&limit=9`);
+        const coffeeStores = await response.json();
+
         dispatch({
             type: ACTION_TYPE.SET_COFFEE_STORES,
-            payload: { coffeeStores: fetchedCoffeeStores } 
+            payload: { coffeeStores } 
         })
 
       } catch(err) {
@@ -48,6 +51,7 @@ export default function Home(props) {
     handleTrackLocation();
   }
 
+
   return (
     <div>
       <Head>
@@ -63,7 +67,7 @@ export default function Home(props) {
         />
 
         {coffeeStores.length > 0 ? <div>
-          <h4 className="mb-3">Coffee Stores</h4>
+          <h4 className="mb-3">{latLong ? 'Nearby Coffee Stores' : 'Khan Market Coffe Stores' }</h4>
           <div className="row row-cols-1 row-cols-md-3 g-3">
             {coffeeStores.map((coffeeStore) => {
               return (
