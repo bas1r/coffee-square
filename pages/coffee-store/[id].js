@@ -44,15 +44,15 @@ export async function getStaticPaths() {
 }
 
 const CoffeStore = (props) => {
-    console.log('PropsS' + props)
+    console.log('PropsS', props)
     const router = useRouter();
     const { id } = router.query
     if (router.isFallback) {
         return <div>Loading...</div>
     }  
 
-    const { name, categories, distance, location, imgUrl } = props.coffeeStore
-    return (
+    const { name, categories, distance, location, imgUrl, geocodes } = props.coffeeStore
+    return <>
     <main>
 
         <Link href="/">
@@ -68,34 +68,40 @@ const CoffeStore = (props) => {
         <div className="card mb-3">
             <div className="row g-0">
           <div className="col-md-4">
-            <img src={imgUrl} className="img-fluid rounded-start" alt="..." />
-          </div>
+            <img src={imgUrl} className="img-fluid" alt="..." />
+          </div> 
           <div className="col-md-8">
             <div className="card-body">
-                <h3 className="card-title">{name}</h3>
-                <h6 className="card-subtitle mb-2 text-muted">
-                    {categories.map(category => {
-                        return <span>{category.name}, </span>
-                    })}     
-                </h6>
-                <p className="card-text"> 
+                <h3 className="card-title">{name}</h3> 
+
+                {categories.map(category => {
+                    return <span key={category.name} className="badge rounded-pill text-bg-dark text-dark mb-2">{`${category.name}`}</span>
+                })}    
+                <span className="badge rounded-pill text-bg-dark">Dark</span> 
+
+                <p className="card-text d-flex align-items-center py-3'"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-fill m-1" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.319 1.319 0 0 0-.37.265.301.301 0 0 0-.057.09V14l.002.008a.147.147 0 0 0 .016.033.617.617 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.619.619 0 0 0 .146-.15.148.148 0 0 0 .015-.033L12 14v-.004a.301.301 0 0 0-.057-.09 1.318 1.318 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465-1.281 0-2.462-.172-3.34-.465-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411z" />
+                    </svg> 
+                    {location.formatted_address}
                 </p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-fill mb-3" viewBox="0 0 16 16">
-                        <path fillRule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.319 1.319 0 0 0-.37.265.301.301 0 0 0-.057.09V14l.002.008a.147.147 0 0 0 .016.033.617.617 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.619.619 0 0 0 .146-.15.148.148 0 0 0 .015-.033L12 14v-.004a.301.301 0 0 0-.057-.09 1.318 1.318 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465-1.281 0-2.462-.172-3.34-.465-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411z"/>
-                </svg> 
-                    
-                <h6>Distance ({distance} Meters) </h6>  
-                <p className="card-text">
-                    {location.address}, {location.locality}, {location.country}
-                </p>
-                <a href="button" className="btn btn-secondary btn-sm">Direction</a>
+
+                <div className='my-4'>
+                <button type="button" className="btn btn-dark rounded-pill">
+                    Upvote <span className="badge text-bg-primary">4</span>
+                </button>
+                </div>
+                {/* <a href="button" className="btn btn-secondary btn-sm rounded-pill mx-2">Direction</a> */}
+                <p className="card-text text-muted"><small className="text-body-secondary">Distance ({distance} Meters)</small></p>     
+
             </div>
           </div>
+                <iframe src={`http://maps.google.com/maps?q=loc:${geocodes.main.latitude}+${geocodes.main.longitude}&z=15&output=embed`}></iframe>
         </div>
         </div> 
 
     </main>
-    )
+    </>
 }
 
 export default CoffeStore;

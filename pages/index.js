@@ -76,6 +76,7 @@ export default function Home(props) {
                     name={coffeeStore.name}
                     location={coffeeStore.location}
                     storePhoto={coffeeStore.imgUrl}
+                    distance={coffeeStore.distance}
                     href={`/coffee-store/${coffeeStore.fsq_id}`}
                   />
                 </div>
