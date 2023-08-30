@@ -9,7 +9,7 @@ const Card = (props) => {
         <div className="card-img-overlay">
           <h5 className="card-title">{props.name}</h5>
           <p className="card-text">{props.location.address}</p>
-          <p className="card-text"><small>Distance {props.distance}</small></p>
+          {/* <p className="card-text"><small>Distance {props.distance}</small></p> */}
         </div>
       </div>
 

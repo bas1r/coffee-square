@@ -29,13 +29,15 @@ export default function Home(props) {
       try {
         // const fetchedCoffeeStores = await fetchCoffeeStores(latLong);
 
-        const response = await fetch(`api/getCoffeeStoresByLocation?latLong=${latLong}&limit=9`);
+        const response = await fetch(`api/getCoffeeStoresByLocation?latLong=${latLong}&limit=15`);
         const coffeeStores = await response.json();
 
         dispatch({
             type: ACTION_TYPE.SET_COFFEE_STORES,
             payload: { coffeeStores } 
         })
+
+        console.log("PAYLOAD: ", coffeeStores)
 
       } catch(err) {
         console.log(err)
@@ -47,7 +49,6 @@ export default function Home(props) {
 
   // console.log({latLong, locationErrorMsg})
   const handleOnBannerBtnClick = () => {
-    console.log("Hello, I clicked");
     handleTrackLocation();
   }
 
@@ -62,12 +63,13 @@ export default function Home(props) {
 
       <main>
         <Banner 
-          buttonText={isLocating ? "Locating..." : "Locate stores"} 
+          buttonText={`${isLocating ? "Locating..." : "Locate Nearby Coffee Stores"}`}
           handleOnClick={handleOnBannerBtnClick}
         />
 
-        {coffeeStores.length > 0 ? <div>
-          <h4 className="mb-3">{latLong ? 'Nearby Coffee Stores' : 'Khan Market Coffe Stores' }</h4>
+        {coffeeStores.length > 0 && ( 
+        <div>
+          <h4 className="mb-3">Nearby Coffee Stores</h4>
           <div className="row row-cols-1 row-cols-md-3 g-3">
             {coffeeStores.map((coffeeStore) => {
               return (
@@ -83,7 +85,30 @@ export default function Home(props) {
                )
             })}
             </div> 
-          </div> : <p>Something went wrong</p>}
+          </div>
+          )}
+
+          {props.coffeeStores.length > 0 && ( 
+          <div className="mt-5">
+          <h4 className="mb-3">Coffee Stores (Times Square)</h4>
+          <div className="row row-cols-1 row-cols-md-3 g-3">
+            {props.coffeeStores.map((coffeeStore) => {
+              return (
+                <div key={coffeeStore.fsq_id} className="col">
+                  <Card 
+                    name={coffeeStore.name}
+                    location={coffeeStore.location}
+                    storePhoto={coffeeStore.imgUrl}
+                    distance={coffeeStore.distance}
+                    href={`/coffee-store/${coffeeStore.fsq_id}`}
+                  />
+                </div>
+               )
+            })}
+            </div> 
+          </div>
+          )}
+
       </main>
       
     </div>
