@@ -2,12 +2,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { fetchCoffeeStores } from "../../lib/coffee-stores";
 import { StoreContext } from "../../context/store-context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { isEmpty } from "../../utils"
 
 
 export async function getStaticProps(staticProps) {
-    console.log("params: ", staticProps)
-
     const params = staticProps.params;
     
     // const { dispatch, state } = useContext(StoreContext);
@@ -44,14 +43,65 @@ export async function getStaticPaths() {
 }
 
 const CoffeStore = (props) => {
-    console.log('PropsS', props)
     const router = useRouter();
     const { id } = router.query
+    
     if (router.isFallback) {
         return <div>Loading...</div>
-    }  
+    } 
+    
+    const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
+    
+    const { state: { coffeeStores }, } = useContext(StoreContext);
 
-    const { name, categories, distance, location, imgUrl, geocodes } = props.coffeeStore
+    const handleCreateCoffeeStore = async (coffeeStore) => {
+        try {
+            // const { id, name, categories, distance, imgUrl, address, geoCode, voting } = coffeeStore;
+            const {fsq_id, name, categories, distance, location, imgUrl, geocodes } = coffeeStore;
+            const response = await fetch("http://localhost:3000/api/createCoffeeStore", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: fsq_id,
+                    name,
+                    distance,
+                    address: location.formatted_address,
+                    imgUrl,
+                    voting: 0,
+
+                }),
+            });
+
+            const dbCoffeeStore = await response.json()
+            console.log("DB", { dbCoffeeStore })
+        } catch (err) {
+            console.error("Error creating coffee store", err)
+        }
+    };
+
+    // console.log('Context', coffeeStores)
+    // console.log('StaticPROPS', props.coffeeStore)
+    // console.log('isEmpty', !isEmpty(props.coffeeStore))
+
+    useEffect(() => {
+        if (!isEmpty(props.coffeeStore)) {
+            if (coffeeStores.length > 0) {
+                const coffeeStoreById = coffeeStores.find((coffeeStore) => {
+                    return coffeeStore.fsq_id.toString() === id;
+                });
+
+                if (findCoffeeStoreById) {
+                    setCoffeeStore(findCoffeeStoreById);
+                    handleCreateCoffeeStore(findCoffeeStoreById);
+
+                }
+            }
+        }
+    }, [id]);
+
+    const { name, categories, distance, location, imgUrl, geocodes } = coffeeStore
     return <>
     <main>
 
