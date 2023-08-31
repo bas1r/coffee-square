@@ -228,7 +228,7 @@ const CoffeStore = (props) => {
               </div>
             </div>
             <iframe
-              src={`http://maps.google.com/maps?q=loc:${geocodes.main.latitude}+${geocodes.main.longitude}&z=15&output=embed`}
+              src={`https://maps.google.com/maps?q=loc:${geocodes.main.latitude}+${geocodes.main.longitude}&z=15&output=embed`}
             ></iframe>
           </div>
         </div>
