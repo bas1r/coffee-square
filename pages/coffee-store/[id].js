@@ -40,12 +40,8 @@ export async function getStaticPaths() {
 
 const CoffeStore = (props) => {
   const router = useRouter();
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
   const { id } = router.query;
-  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore || {});
   const {
     state: { coffeeStores },
   } = useContext(StoreContext);
@@ -57,23 +53,20 @@ const CoffeStore = (props) => {
       // const { id, name, categories, distance, imgUrl, address, geoCode, voting } = coffeeStore;
       const { fsq_id, name, categories, distance, location, imgUrl, geocodes } =
         coffeeStore;
-      const response = await fetch(
-        "http://localhost:3000/api/createCoffeeStore",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            id: fsq_id,
-            name,
-            distance,
-            address: location.formatted_address,
-            imgUrl,
-            voting: 0,
-          }),
-        }
-      );
+      const response = await fetch("/api/createCoffeeStore", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          id: fsq_id,
+          name,
+          distance,
+          address: location.formatted_address,
+          imgUrl,
+          voting: 0,
+        }),
+      });
 
       const dbCoffeeStore = await response.json();
       console.log("DB", { dbCoffeeStore });
@@ -118,22 +111,23 @@ const CoffeStore = (props) => {
     }
   }, [data]);
 
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   const handleUpvotingCount = async () => {
     console.log("Upvoting handle");
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/favouriteCoffeeStoreById",
-        {
-          method: "PUT",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            id,
-          }),
-        }
-      );
+      const response = await fetch("/api/favouriteCoffeeStoreById", {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      });
 
       const dbCoffeeStore = await response.json();
       console.log("DB", { dbCoffeeStore });

@@ -48,6 +48,7 @@ export default function Home(props) {
 
   useEffect(() => {
     handleUseEffect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latLong]);
 
   // console.log({latLong, locationErrorMsg})
