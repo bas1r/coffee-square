@@ -1,7 +1,7 @@
 module.exports = {
   reactStrictMode: false,
   images: {
-    domains: ['source.unsplash.com'],
+    domains: ['fastly.4sqi.net'],
   },
 }
 
