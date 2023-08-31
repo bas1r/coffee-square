@@ -8,7 +8,7 @@ import { useEffect, useState, useContext } from "react";
 import { ACTION_TYPE, StoreContext } from "../context/store-context";
 
 export async function getStaticProps(context) {
-  const coffeeStores = await fetchCoffeeStores();
+  const coffeeStores = await fetchCoffeeStores("", 12);
 
   return {
     props: {
@@ -30,7 +30,7 @@ export default function Home(props) {
         // const fetchedCoffeeStores = await fetchCoffeeStores(latLong);
 
         const response = await fetch(
-          `api/getCoffeeStoresByLocation?latLong=${latLong}&limit=15`
+          `api/getCoffeeStoresByLocation?latLong=${latLong}&limit=16`
         );
         const coffeeStores = await response.json();
 
@@ -75,7 +75,7 @@ export default function Home(props) {
         {coffeeStores.length > 0 && (
           <div>
             <h4 className="mb-3">Nearby Coffee Stores</h4>
-            <div className="row row-cols-1 row-cols-md-3 g-3">
+            <div className="row row-cols-1 row-cols-md-4 g-3">
               {coffeeStores.map((coffeeStore) => {
                 return (
                   <div key={coffeeStore.fsq_id} className="col">
@@ -96,7 +96,7 @@ export default function Home(props) {
         {props.coffeeStores.length > 0 && (
           <div className="mt-5">
             <h4 className="mb-3">Coffee Stores (Times Square)</h4>
-            <div className="row row-cols-1 row-cols-md-3 g-3">
+            <div className="row row-cols-1 row-cols-md-4 g-3">
               {props.coffeeStores.map((coffeeStore) => {
                 return (
                   <div key={coffeeStore.fsq_id} className="col">

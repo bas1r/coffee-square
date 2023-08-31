@@ -16,7 +16,7 @@ const Card = (props) => {
         ></Image>
         <div className="card-img-overlay">
           <h5 className="card-title">{props.name}</h5>
-          <p className="card-text">{props.location.address}</p>
+          <p className="card-text">{props.location.formatted_address}</p>
           {/* <p className="card-text"><small>Distance {props.distance}</small></p> */}
         </div>
       </div>
